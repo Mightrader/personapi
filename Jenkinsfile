@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Maven') {
             steps {
                 sh 'chmod +x mvnw'
@@ -18,7 +12,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t personapi-jenkins .'
+                sh 'docker build -t personapi-app .'
             }
         }
 
