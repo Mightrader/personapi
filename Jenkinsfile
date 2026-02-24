@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh '''
                 docker rm -f personapi-container || true
-                docker run -d -p 8080:8080 --name personapi-container personapi-app
+                docker run -d -p 8082:8080 --name personapi-container personapi-app
                 '''
             }
         }
