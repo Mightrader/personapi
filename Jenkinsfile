@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Maven') {
             steps {
                 sh 'chmod +x mvnw'
@@ -19,6 +13,15 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t personapi-app .'
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh '''
+                docker rm -f personapi-container || true
+                docker run -d -p 8082:8080 --name personapi-container personapi-app
+                '''
             }
         }
     }
