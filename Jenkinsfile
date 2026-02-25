@@ -10,15 +10,45 @@ pipeline {
             }
         }
 
-        stage('Docker Compose Down') {
+        stage('Remove Old Containers') {
             steps {
-                sh 'docker compose down || true'
+                sh '''
+                docker rm -f personapi-container || true
+                docker rm -f mysql-container || true
+                '''
             }
         }
 
-        stage('Docker Compose Up') {
+        stage('Start MySQL') {
             steps {
-                sh 'docker compose up -d --build'
+                sh '''
+                docker run -d \
+                  --name mysql-container \
+                  -e MYSQL_ROOT_PASSWORD=rootpass \
+                  -e MYSQL_DATABASE=persondb \
+                  -e MYSQL_USER=personuser \
+                  -e MYSQL_PASSWORD=personpass \
+                  -p 3306:3306 \
+                  mysql:8.0
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t personapi-app .'
+            }
+        }
+
+        stage('Start API') {
+            steps {
+                sh '''
+                docker run -d \
+                  --name personapi-container \
+                  --link mysql-container:mysql \
+                  -p 8082:8080 \
+                  personapi-app
+                '''
             }
         }
     }
