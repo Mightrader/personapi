@@ -10,18 +10,15 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Docker Compose Down') {
             steps {
-                sh 'docker build -t personapi-app .'
+                sh 'docker compose down || true'
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Docker Compose Up') {
             steps {
-                sh '''
-                docker rm -f personapi-container || true
-                docker run -d -p 8082:8080 --name personapi-container personapi-app
-                '''
+                sh 'docker compose up -d --build'
             }
         }
     }
