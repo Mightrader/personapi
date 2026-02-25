@@ -28,7 +28,6 @@ pipeline {
                   -e MYSQL_DATABASE=persondb \
                   -e MYSQL_USER=personuser \
                   -e MYSQL_PASSWORD=personpass \
-                  -p 3306:3306 \
                   mysql:8.0
                 '''
             }
